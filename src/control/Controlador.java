@@ -6,13 +6,17 @@ import VO.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class Controlador implements ActionListener {
-
+    
     Integer idUsu = 0;
     Integer idSerie = 0;
     Integer idCap = 0;
+    Integer idCri=0;
     Ver v = new Ver();
     UsuarioDAO usuDAO = new UsuarioDAO();
     SubtituloDAO subDAO = new SubtituloDAO();
@@ -21,6 +25,7 @@ public class Controlador implements ActionListener {
     SerieDAO seDAO = new SerieDAO();
     CapituloDAO capDAO = new CapituloDAO();
     TemporadaDAO temDAO = new TemporadaDAO();
+    CriticaDAO criDAO = new CriticaDAO();
     //Inicios
 
     private A_menu amenu = null;
@@ -57,7 +62,7 @@ public class Controlador implements ActionListener {
     //Otros
     private U_Favoritos fav = null;
     private U_PuntuarSerie puntuar = null;
-
+    
     public Controlador(A_menu amenu, Entrar e, IniciarSesion isesion,
             R_Actor ractor, Actor actor,
             R_Capitulo rcap, Capitulo cap, U_VerCapitulo vcap,
@@ -99,7 +104,7 @@ public class Controlador implements ActionListener {
         actionListener(this);
         this.e.setVisible(true);
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         try {
@@ -127,7 +132,7 @@ public class Controlador implements ActionListener {
                 this.rsub.setVisible(true);
                 this.amenu.dispose();
             } else if (ae.getSource() == this.amenu.btnTep) {
-
+                
                 this.rtemp.setVisible(true);
                 this.rtemp.llenar(this.rtemp.id_serie);
                 this.amenu.dispose();
@@ -145,7 +150,7 @@ public class Controlador implements ActionListener {
                 if (n == 1) {
                     this.isesion.dispose();
                     this.amenu.setVisible(true);
-
+                    
                 } else if (n == 2) {
                     this.isesion.dispose();
                     this.vserie.setVisible(true);
@@ -182,7 +187,7 @@ public class Controlador implements ActionListener {
                         this.rusu.btnEliminar.setEnabled(true);
                         this.rusu.btnRegistrar.setEnabled(false);
                         this.rusu.visible(false);
-
+                        
                     } else {
                         JOptionPane.showMessageDialog(null, "Usuario " + id + ", no encontrado");
                         this.rusu.txtCedula.setText("");
@@ -191,7 +196,7 @@ public class Controlador implements ActionListener {
                     }
                 }
             } else if (ae.getSource() == this.rusu.btnRegistrar) {
-
+                
                 if (this.rusu.txtApellidoUsuario.getText().equalsIgnoreCase("") || this.rusu.txtNombreUsuario.getText().equalsIgnoreCase("")
                         || this.rusu.txtCedula.getText().equalsIgnoreCase("") || this.rusu.txtCorreo.getText().equalsIgnoreCase("")
                         || this.rusu.tpContraseña.getText().equalsIgnoreCase("") || this.rusu.txtAño.getText().equalsIgnoreCase("")
@@ -249,7 +254,7 @@ public class Controlador implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Llenar los campos");
                     this.rusu.txtCedula.setText("");
                     this.rusu.visible(true);
-
+                    
                     this.botones();
                 } else {
                     if (this.usuDAO.Buscar(id)) {
@@ -283,7 +288,7 @@ public class Controlador implements ActionListener {
                         this.rsub.btnElimminar.setEnabled(true);
                         this.rsub.btnRegistrarSubtitulos.setEnabled(false);
                         this.rsub.visible(false);
-
+                        
                     } else {
                         JOptionPane.showMessageDialog(null, "Subtítulo " + id + ", no encontrado");
                         this.rsub.txtCodigo.setText("");
@@ -309,7 +314,7 @@ public class Controlador implements ActionListener {
                             this.sub.setAutor(autor);
                             this.sub.setCod_subtitulo(id);
                             this.sub.setIdioma(idioma);
-
+                            
                             this.subDAO.actualizar(sub, id);
                             this.rsub.limpiar();
                             this.rsub.btnActualizar.setEnabled(false);
@@ -335,9 +340,9 @@ public class Controlador implements ActionListener {
                     this.rsub.limpiar();
                 }
                 this.rsub.txtCodigo.setEnabled(true);
-
+                
             } else if (ae.getSource() == this.rsub.btnSubir) {
-
+                
             } else if (ae.getSource() == this.rsub.btnActualizar) {
                 this.rsub.btnRegistrarSubtitulos.setText("Guardar");
                 this.rsub.btnRegistrarSubtitulos.setEnabled(true);
@@ -373,24 +378,24 @@ public class Controlador implements ActionListener {
 
             ///RegistrarActor
             if (ae.getSource() == ractor.btnRegistrarActor) {
-
+                
                 if (ractor.txtCodigoActor.getText().equalsIgnoreCase("") || ractor.txtNombreRealActor.getText().equalsIgnoreCase("")
                         || ractor.txtNombreArtistico.getText().equalsIgnoreCase("")) {
                     JOptionPane.showConfirmDialog(null, "Llenar todos los campos");
                     ractor.txtCodigoActor.requestFocus();
                     this.ractor.limpiar();
-
+                    
                 } else {
                     Integer id = Integer.parseInt(this.ractor.txtCodigoActor.getText());
                     if (this.acDAO.Buscar(id)) {
                         if (this.ractor.btnRegistrarActor.getText().equalsIgnoreCase("Guardar")) {
                             String noma = this.ractor.txtNombreArtistico.getText();
                             String nomr = this.ractor.txtNombreRealActor.getText();
-
+                            
                             this.actor.setId_actor(id);
                             this.actor.setNombre_pers(noma);
                             this.actor.setNombre_real(nomr);
-
+                            
                             this.acDAO.actualizar(actor, id);
                             this.ractor.limpiar();
                             this.ractor.btnModificar.setEnabled(false);
@@ -416,9 +421,9 @@ public class Controlador implements ActionListener {
                     this.ractor.txtCodigoActor.setText("");
                     this.ractor.txtCodigoActor.setEnabled(true);
                 }
-
+                
             } else if (ae.getSource() == ractor.btnBuscarActor) {
-
+                
                 Integer id = Integer.parseInt(this.ractor.txtCodigoActor.getText());
                 if (this.ractor.txtCodigoActor.getText().equalsIgnoreCase("")) {
                     JOptionPane.showMessageDialog(null, "Llenar los campos");
@@ -433,7 +438,7 @@ public class Controlador implements ActionListener {
                         this.ractor.btnEliminar.setEnabled(true);
                         this.ractor.btnRegistrarActor.setEnabled(false);
                         this.ractor.visible(false);
-
+                        
                     } else {
                         JOptionPane.showMessageDialog(null, "Actor " + id + ", no encontrado");
                         this.ractor.txtCodigoActor.setText("");
@@ -441,10 +446,10 @@ public class Controlador implements ActionListener {
                         this.ractor.limpiar();
                         this.ractor.visible(true);
                     }
-
+                    
                     this.ractor.btnRegistrarActor.setEnabled(true);
                 }
-
+                
             } else if (ae.getSource() == ractor.btnModificar) {
                 this.ractor.btnRegistrarActor.setText("Guardar");
                 this.ractor.btnRegistrarActor.setEnabled(true);
@@ -452,9 +457,9 @@ public class Controlador implements ActionListener {
                 this.ractor.btnEliminar.setEnabled(false);
                 this.ractor.txtCodigoActor.setEnabled(false);
                 this.ractor.visible(true);
-
+                
             } else if (ae.getSource() == ractor.btnEliminar) {
-
+                
                 Integer id = Integer.parseInt(this.ractor.txtCodigoActor.getText());
                 if (this.ractor.txtCodigoActor.getText().equalsIgnoreCase("")) {
                     JOptionPane.showMessageDialog(null, "Llenar los campos");
@@ -482,20 +487,20 @@ public class Controlador implements ActionListener {
                     this.ractor.txtCodigoActor.setEnabled(true);
                     this.ractor.btnRegistrarActor.setEnabled(true);
                 }
-
+                
             } else if (ae.getSource() == ractor.btnVolver) {
                 this.ractor.dispose();
                 this.ractor.limpiar();
                 this.amenu.setVisible(true);
             } //Registrar personaje
             else if (ae.getSource() == rpe.btnRegistrarPersonaje) {
-
+                
                 if (this.rpe.txtCodigoPersonaje.getText().equalsIgnoreCase("") || this.rpe.txtNombrePersonaje.getText().equalsIgnoreCase("")
                         || this.rpe.cbActor.getSelectedIndex() == 0/*Puede dejar cap sin llenar*/) {
                     JOptionPane.showConfirmDialog(null, "Llenar todos los campos");
                     rpe.txtCodigoPersonaje.requestFocus();
                     this.rpe.limpiar();
-
+                    
                 } else {
                     Integer id = Integer.parseInt(this.rpe.txtCodigoPersonaje.getText());
                     if (this.peDAO.Buscar(id)) {
@@ -503,12 +508,12 @@ public class Controlador implements ActionListener {
                             String nomp = this.rpe.txtNombrePersonaje.getText();
                             Integer id_cap = Integer.parseInt(this.rpe.cbCap.getSelectedItem().toString());
                             Integer id_ac = Integer.parseInt(this.rpe.cbActor.getSelectedItem().toString());
-
+                            
                             this.pe.setCodigo_personaje(id);
                             this.pe.setNombre_personaje(nomp);
                             this.pe.setId_Actor(id_ac);
                             this.pe.setId_capitulo(id_cap);
-
+                            
                             this.peDAO.actualizarPer(pe, id);
                             this.rpe.limpiar();
                             this.rpe.btnModificarPersonaje.setEnabled(false);
@@ -535,9 +540,9 @@ public class Controlador implements ActionListener {
                     this.rpe.txtCodigoPersonaje.setText("");
                     this.rpe.txtCodigoPersonaje.setEnabled(true);
                 }
-
+                
             } else if (ae.getSource() == rpe.btnBuscarPersonaje) {
-
+                
                 Integer id = Integer.parseInt(this.rpe.txtCodigoPersonaje.getText());
                 if (this.rpe.txtCodigoPersonaje.getText().equalsIgnoreCase("")) {
                     JOptionPane.showMessageDialog(null, "Llenar los campos");
@@ -552,7 +557,7 @@ public class Controlador implements ActionListener {
                         this.rpe.btnEliminarPersonaje.setEnabled(true);
                         this.rpe.btnRegistrarPersonaje.setEnabled(false);
                         this.rpe.visible(false);
-
+                        
                     } else {
                         JOptionPane.showMessageDialog(null, "Personaje " + id + ", no encontrado");
                         this.rpe.txtCodigoPersonaje.setText("");
@@ -560,10 +565,10 @@ public class Controlador implements ActionListener {
                         this.rpe.limpiar();
                         this.rpe.visible(true);
                     }
-
+                    
                     this.rpe.btnRegistrarPersonaje.setEnabled(true);
                 }
-
+                
             } else if (ae.getSource() == rpe.btnModificarPersonaje) {
                 this.rpe.btnRegistrarPersonaje.setText("Guardar");
                 this.rpe.btnRegistrarPersonaje.setEnabled(true);
@@ -571,9 +576,9 @@ public class Controlador implements ActionListener {
                 this.rpe.btnEliminarPersonaje.setEnabled(false);
                 this.rpe.txtCodigoPersonaje.setEnabled(false);
                 this.rpe.visible(true);
-
+                
             } else if (ae.getSource() == rpe.btnEliminarPersonaje) {
-
+                
                 Integer id = Integer.parseInt(this.rpe.txtCodigoPersonaje.getText());
                 if (this.rpe.txtCodigoPersonaje.getText().equalsIgnoreCase("")) {
                     JOptionPane.showMessageDialog(null, "Llenar los campos");
@@ -601,7 +606,7 @@ public class Controlador implements ActionListener {
                     this.rpe.txtCodigoPersonaje.setEnabled(true);
                     this.rpe.btnRegistrarPersonaje.setEnabled(true);
                 }
-
+                
             } else if (ae.getSource() == rpe.btnVolver) {
                 this.rpe.dispose();
                 this.rpe.limpiar();
@@ -616,15 +621,15 @@ public class Controlador implements ActionListener {
                 this.rserie.visible(true);
                 this.rserie.txtCodigo.setEnabled(false);
                 this.rserie.btnRegistrar.setText("Guardar");
-
+                
             } else if (ae.getSource() == this.rserie.btnRegistrar) {
-
+                
                 if ((this.rserie.txtCodigo.getText().equals("")) || (this.rserie.txtTitulo.getText().equals("")) || (this.rserie.txtGenero.getSelectedIndex() == 0)
                         || (this.rserie.txtAño.getText().equals("")) || (this.rserie.txtSinopsis.getText().equals("")) || (this.rserie.ruta.getText().equals(""))) {
                     JOptionPane.showConfirmDialog(null, "Llenar todos los campos");
                     this.rserie.txtCodigo.requestFocus();
                     this.rserie.limpiar();
-
+                    
                 } else {
                     Integer id = Integer.parseInt(this.rserie.txtCodigo.getText());
                     if (this.seDAO.Buscar(id)) {
@@ -640,7 +645,7 @@ public class Controlador implements ActionListener {
                             this.serie.setAno_inicio(anio);
                             this.serie.setCod_genero(id_genero);
                             this.serie.setImagen(ruta);
-
+                            
                             this.seDAO.Actualizar(serie, id);
                             this.rserie.limpiar();
                             this.rserie.botones(false);
@@ -667,7 +672,7 @@ public class Controlador implements ActionListener {
                     this.rserie.txtCodigo.setText("");
                     this.rserie.txtCodigo.setEnabled(true);
                 }
-
+                
             } else if (ae.getSource() == this.rserie.btnBuscar) {
                 if (this.rserie.txtCodigo.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Llenar los campos");
@@ -676,7 +681,7 @@ public class Controlador implements ActionListener {
                     boolean n = seDAO.Buscar(id);
                     if (n == true) {
                         this.rserie.botones(true);
-
+                        
                         this.rserie.btnRegistrar.setEnabled(false);
                         this.rserie.txtCodigo.setEnabled(false);
                         this.rserie.visible(false);
@@ -715,7 +720,7 @@ public class Controlador implements ActionListener {
                     this.rserie.txtCodigo.setEnabled(true);
                     this.rserie.btnRegistrar.setEnabled(true);
                 }
-
+                
             } else if (ae.getSource() == this.rserie.btnVolver) {
                 this.rserie.dispose();
                 this.rserie.limpiar();
@@ -723,21 +728,21 @@ public class Controlador implements ActionListener {
                 this.amenu.setVisible(true);
             } /*//Registrar temporada*/ else if (ae.getSource() == this.rtemp.btnActualizar) {
                 this.rtemp.btnActualizar.setEnabled(false);
-
+                
                 this.rtemp.btnEliminar.setEnabled(false);
                 this.rtemp.btnRegistrar.setEnabled(true);
                 this.rtemp.visible(true);
                 this.rtemp.txtCodigo.setEnabled(false);
                 this.rtemp.btnRegistrar.setText("Guardar");
-
+                
             } else if (ae.getSource() == this.rtemp.btnRegistrar) {
-
+                
                 if ((this.rtemp.txtCodigo.getText().equals("")) || (this.rtemp.txtFechaE.getText().equals("")) || (this.rtemp.id_serie.getSelectedIndex() == 0)
                         || (this.rtemp.txtFechaP.getText().equals(""))) {
                     JOptionPane.showConfirmDialog(null, "Llenar todos los campos");
                     this.rtemp.txtCodigo.requestFocus();
                     this.rtemp.limpiar();
-
+                    
                 } else {
                     Integer id = Integer.parseInt(this.rtemp.txtCodigo.getText());
                     if (this.temDAO.Buscar(id)) {
@@ -745,12 +750,12 @@ public class Controlador implements ActionListener {
                             String fechaprod = this.rtemp.txtFechaP.getText();
                             String fechaestreno = this.rtemp.txtFechaE.getText();
                             Integer id_serie = Integer.parseInt(this.rtemp.id_serie.getSelectedItem().toString());
-
+                            
                             this.temp.setCod_temporada(id);
                             this.temp.setCod_serie(id_serie);
                             this.temp.setFechaE(fechaestreno);
                             this.temp.setFechaP(fechaprod);
-
+                            
                             this.temDAO.Actualizar(temp, id);
                             this.rtemp.limpiar();
                             this.rtemp.botones(false);
@@ -764,7 +769,7 @@ public class Controlador implements ActionListener {
                             String fechaprod = this.rtemp.txtFechaP.getText();
                             String fechaestreno = this.rtemp.txtFechaE.getText();
                             Integer id_serie = Integer.parseInt(this.rtemp.id_serie.getSelectedItem().toString());
-
+                            
                             temp = new Temporada(fechaprod, fechaestreno, id, id_serie);
                             this.temDAO.guardar(Conexion.getConnection(), temp);
                             this.rtemp.limpiar();
@@ -776,7 +781,7 @@ public class Controlador implements ActionListener {
                     this.rtemp.txtCodigo.setText("");
                     this.rtemp.txtCodigo.setEnabled(true);
                 }
-
+                
             } else if (ae.getSource() == this.rtemp.btnBuscar) {
                 if (this.rtemp.txtCodigo.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Llenar los campos");
@@ -822,7 +827,7 @@ public class Controlador implements ActionListener {
                     this.rtemp.txtCodigo.setEnabled(true);
                     this.rtemp.btnRegistrar.setEnabled(true);
                 }
-
+                
             } else if (ae.getSource() == this.rtemp.btnVolver) {
                 this.rtemp.dispose();
                 this.rtemp.limpiar();
@@ -831,21 +836,21 @@ public class Controlador implements ActionListener {
             } //Registrar Capitulo
             else if (ae.getSource() == this.rcap.btnActualizar) {
                 this.rcap.btnActualizar.setEnabled(false);
-
+                
                 this.rcap.btnEliminar.setEnabled(false);
                 this.rcap.btnRegistrar.setEnabled(true);
                 this.rcap.visible(true);
                 this.rcap.txtCodigo.setEnabled(false);
                 this.rcap.btnRegistrar.setText("Guardar");
-
+                
             } else if (ae.getSource() == this.rcap.btnRegistrar) {
-
+                
                 if ((this.rcap.txtCodigo.getText().equals("")) || (this.rcap.txtTitulo.getText().equals(""))
                         || (this.rcap.cbTemporada.getSelectedIndex() == 0) || (this.rcap.txtDuracion.getText().equals("")) || (this.rcap.txtSinopsis.getText().equals(""))) {
                     JOptionPane.showConfirmDialog(null, "Llenar todos los campos");
                     this.rcap.txtCodigo.requestFocus();
                     this.rcap.limpiar();
-
+                    
                 } else {
                     Integer id = Integer.parseInt(this.rcap.txtCodigo.getText());
                     if (this.capDAO.Buscar(id)) {
@@ -861,7 +866,7 @@ public class Controlador implements ActionListener {
                             cap.setDuracion(duracion);
                             cap.setId_tempoTemporada(id_temp);
                             cap.setId_subtitulos(id_sub);
-
+                            
                             this.capDAO.Actualizar(cap, id);
                             this.rcap.limpiar();
                             this.rcap.botones(false);
@@ -884,7 +889,7 @@ public class Controlador implements ActionListener {
                             cap.setDuracion(duracion);
                             cap.setId_tempoTemporada(id_temp);
                             cap.setId_subtitulos(id_sub);
-
+                            
                             this.capDAO.guardar(Conexion.getConnection(), cap);
                             this.rcap.limpiar();
                             this.rcap.botones(false);
@@ -895,7 +900,7 @@ public class Controlador implements ActionListener {
                     this.rcap.txtCodigo.setText("");
                     this.rcap.txtCodigo.setEnabled(true);
                 }
-
+                
             } else if (ae.getSource() == this.rcap.btnBuscar) {
                 if (this.rcap.txtCodigo.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Llenar los campos");
@@ -907,7 +912,7 @@ public class Controlador implements ActionListener {
                         this.rcap.btnRegistrar.setEnabled(false);
                         this.rcap.txtCodigo.setEnabled(false);
                         this.rcap.visible(false);
-
+                        
                         capDAO.Llenar(id, this.rcap.txtTitulo, this.rcap.txtDuracion, this.rcap.txtSinopsis, this.rcap.cbTemporada, this.rcap.cbSubti);
                     } else {
                         JOptionPane.showMessageDialog(null, "No se encontró Capítulo: " + id);
@@ -943,15 +948,15 @@ public class Controlador implements ActionListener {
                     this.rcap.txtCodigo.setEnabled(true);
                     this.rcap.btnRegistrar.setEnabled(true);
                 }
-
+                
             } else if (ae.getSource() == this.rcap.bntVolver) {
                 this.rcap.dispose();
-
+                
                 this.amenu.setVisible(true);
                 this.rcap.cbSubti.removeAllItems();
                 this.rcap.cbTemporada.removeAllItems();
                 this.rcap.limpiar();
-
+                
             } //Ver serie
             else if (ae.getSource() == this.vserie.btnBuscarGe) {
                 //buecar
@@ -961,13 +966,13 @@ public class Controlador implements ActionListener {
                 this.vserie.dispose();
                 this.fav.setVisible(true);
                 v.visualizarFavo(this.fav.tablaFavoritos, idUsu);
-
+                
             } else if (ae.getSource() == this.fav.jButton1) {
                 this.fav.dispose();
                 this.vserie.setVisible(true);
             } else if (ae.getSource() == this.vserie.btnVer) {
                 int n = this.vserie.jTable1.getSelectedRow();
-
+                
                 if (n == -1) {
                     JOptionPane.showMessageDialog(null, "Llenar todos los espacios, o seleccionar fila");
                 } else {
@@ -976,9 +981,9 @@ public class Controlador implements ActionListener {
                     this.vtemp.setVisible(true);
                     v.Llenar(idSerie, this.vtemp.lbSerie, this.vtemp.lbAño, this.vtemp.jTextArea1, this.vtemp.lbimagen);
                     this.vtemp.llenar(this.vtemp.cbTemporadas, idSerie);
-
+                    
                 }
-
+                
             } else if (ae.getSource() == this.vtemp.jButton1) {
                 Integer tem = Integer.parseInt(this.vtemp.cbTemporadas.getSelectedItem().toString());
                 this.v.visualizarCap(this.vtemp.tablaCap, tem);
@@ -987,14 +992,36 @@ public class Controlador implements ActionListener {
                 this.vserie.setVisible(true);
             } else if (ae.getSource() == this.vtemp.btnFavo) {
                 v.guardar(Conexion.getConnection(), idUsu, idSerie);
-
+            } //critica de la serie 
+            else if (ae.getSource() == this.vtemp.btnCri) {
+                this.vtemp.dispose();
+                this.rcri.setVisible(true);
+                idCri=idUsu;
+                
+            } 
+            else if (ae.getSource()== this.vcap.btnCritica) {
+                this.vcap.dispose();
+                this.rcri.setVisible(true);
+                idCri=idCap;
+                
+            } else if (ae.getSource() == this.rcri.btnGuardar) {
+                this.cri.setCod_critica(idUsu);
+                this.cri.setCritica(this.rcri.taComentario.getText());
+                this.cri.setFechaC(this.rcri.txtFecha.getText());
+                this.cri.setTipo_critica(idSerie);
+                this.criDAO.registrarCritica(cri);
+                
+            } else if (ae.getSource() == this.rcri.btnVolver) {
+                this.rcri.dispose();
+                this.vserie.setVisible(true);
+                
             } else if (ae.getSource() == this.vtemp.btnVer) {
                 int nc = this.vtemp.tablaCap.getSelectedRow();
-
+                
                 if (nc == -1) {
                     JOptionPane.showMessageDialog(null, "Llenar todos los espacios, o seleccionar fila");
                 } else {
-
+                    
                     idCap = (Integer) (this.vtemp.tablaCap.getValueAt(nc, 0));
                     System.out.println(idCap);
                     this.vtemp.dispose();
@@ -1007,19 +1034,27 @@ public class Controlador implements ActionListener {
                 this.vserie.setVisible(true);
             } else if (ae.getSource() == this.vcap.jButton2) {
                 JOptionPane.showMessageDialog(null, "Reproduciendo capítulo");
-
+                
+            }
+            else if (ae.getSource()== this.vserie.btnSalirUsus) {
+                idCap=0;
+                idUsu=0;
+                idSerie=0;
+                idCri=0;
+                JOptionPane.showMessageDialog(null, "Se cerró sesion");
+                
             }
         } catch (Exception exs) {
             JOptionPane.showMessageDialog(null, exs);
         }
     }
-
+    
     private void actionListener(ActionListener controlador) {
         //Menu administrador
         this.amenu.btnPer.addActionListener(controlador);
         this.amenu.btnActor.addActionListener(controlador);
         this.amenu.btnCap.addActionListener(controlador);
-
+        
         this.amenu.btnSalir.addActionListener(controlador);
         this.amenu.btnSeries.addActionListener(controlador);
         this.amenu.btnSub.addActionListener(controlador);
@@ -1088,16 +1123,24 @@ public class Controlador implements ActionListener {
         this.vtemp.btnAtras.addActionListener(controlador);
         this.vtemp.btnFavo.addActionListener(controlador);
         this.vtemp.btnVer.addActionListener(controlador);
+        this.vtemp.btnCri.addActionListener(controlador);
+        //Critica
+        this.rcri.btnGuardar.addActionListener(controlador);
+        this.rcri.btnVolver.addActionListener(controlador);
         //Vercap
         this.vcap.btnAtras.addActionListener(controlador);
         this.vcap.jButton2.addActionListener(controlador);
+        this.vcap.btnCritica.addActionListener(controlador);
+        //usuario
+        this.vserie.btnSalirUsus.addActionListener(controlador);
+        
     }
-
+    
     public void botones() {
         this.rusu.limpiar();
         this.rusu.btnActualizar.setEnabled(false);
         this.rusu.btnEliminar.setEnabled(false);
         this.rusu.btnRegistrar.setEnabled(true);
     }
-
+    
 }

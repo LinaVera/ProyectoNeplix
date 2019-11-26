@@ -49,10 +49,5 @@ public class Critica extends Usuario {
         this.tipo_critica = tipo_critica;
     }
 
-    @Override
-    public String toString() {
-        return "Critica{" + "fechaC=" + fechaC + ", critica=" + critica + ", cod_critica=" + cod_critica + ", tipo_critica=" + tipo_critica + '}';
-    }
-   
     
 }

@@ -5,7 +5,11 @@
         <group>
             <file>file:/D:/Documents/NetBeansProjects/ProyectoNeplix/src/control/Controlador.java</file>
             <file>file:/D:/Documents/NetBeansProjects/ProyectoNeplix/src/vista/U_VerCapitulo.java</file>
-            <file>file:/D:/Documents/NetBeansProjects/ProyectoNeplix/src/DAO/Ver.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/ProyectoNeplix/src/vista/U_Critica.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/ProyectoNeplix/src/DAO/UsuarioDAO.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/ProyectoNeplix/src/DAO/SerieDAO.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/ProyectoNeplix/src/VO/Critica.java</file>
+            <file>file:/D:/Documents/NetBeansProjects/ProyectoNeplix/src/DAO/CriticaDAO.java</file>
         </group>
     </open-files>
 </project-private>
